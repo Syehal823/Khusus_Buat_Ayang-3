@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Khusus buat ayang aku 💖</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Sacramento&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
+  <!-- Musik -->
+  <audio id="bgMusic" loop>
+    <source src="hi2.mp3" type="audio/mpeg"> <!-- GANTI DI SINI: file musik -->
+    Browser kamu tidak mendukung audio.
+  </audio>
+
+  <style>
+    /* ---------- BASIC ---------- */
+    :root{
+      --baby-pink-1: #fff8fb;
+      --baby-pink-2: #ffe6f1;
+      --baby-pink-3: #ffd6e0;
+      --accent: #ff91af;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Poppins", sans-serif;
+      background: radial-gradient(circle at top, var(--baby-pink-1) 0%, var(--baby-pink-2) 60%, var(--baby-pink-3) 100%);
+      color: #e45b8d;
+      min-height:100vh;
+      position:relative;
+      overflow-x:hidden;
+    }
+
+    /* ---------- BOKEH ---------- */
+    .bokeh{position:absolute;inset:0;pointer-events:none;z-index:0}
+    .bokeh span{position:absolute;border-radius:50%;background:rgba(255,192,203,0.35);filter:blur(6px);animation:float 12s infinite ease-in-out}
+    .bokeh span:nth-child(1){width:120px;height:120px;left:10%;top:20%;animation-delay:0s}
+    .bokeh span:nth-child(2){width:160px;height:160px;left:60%;top:50%;animation-delay:2s}
+    .bokeh span:nth-child(3){width:130px;height:130px;left:80%;top:30%;animation-delay:4s}
+    .bokeh span:nth-child(4){width:100px;height:100px;left:30%;top:70%;animation-delay:1s}
+    .bokeh span:nth-child(5){width:150px;height:150px;left:50%;top:10%;animation-delay:3s}
+    @keyframes float{0%,100%{transform:translateY(0) scale(1);opacity:.5}50%{transform:translateY(-40px) scale(1.1);opacity:.8}}
+
+    /* ---------- MUSIC BUTTON (initial center -> then corner) ---------- */
+    #musicBtn{
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      background:linear-gradient(135deg,#ffb6c1,#ff91af);
+      color:white;border:none;border-radius:50%;
+      width:80px;height:80px;font-size:32px;cursor:pointer;
+      box-shadow:0 0 20px rgba(255,145,175,.6);
+      transition:all .6s ease;z-index:50;
+    }
+    /* fade out class while moving */
+    #musicBtn.fadeOut{opacity:0;transform:translate(-50%,-50%) scale(.8)}
+    /* corner state (hidden first op 0 then fade in) */
+    #musicBtn.corner{top:20px;right:25px;left:auto;transform:none;width:60px;height:60px;font-size:24px;opacity:0;box-shadow:0 0 20px rgba(255,145,175,.8)}
+    #musicBtn.corner.show{opacity:1;transition:opacity .8s ease}
+    /* ensure pointer visible on final state */
+    #musicBtn:hover{transform:translate(-50%,-50%) scale(1.05)} /* only matters before moved */
+
+    /* ---------- TITLE (hidden initially) ---------- */
+    .Happy{display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;opacity:0;visibility:hidden;flex-direction:column;z-index:20;transition:opacity 1.2s ease}
+    .Happy.show{opacity:1;visibility:visible}
+    h1{font-family:"Sacramento",cursive;font-size:calc(28px + 16vh);line-height:calc(40px + 20vh);color:var(--accent);
+      text-shadow:0 0 8px rgba(255,167,200,.8),0 0 20px rgba(255,167,200,.6),0 0 35px rgba(255,182,193,.5);
+      margin:0;padding:0}
+    .typing span{opacity:0;display:inline-block;animation:charFade .08s forwards}
+    @keyframes charFade{to{opacity:1}}
+
+    /* ---------- GALLERY (hidden initially) ---------- */
+    .pic{display:none;background:linear-gradient(180deg,#fff0f5 0%,#ffe4ec 100%);padding:60px 0;opacity:0;transition:opacity 1.2s ease;z-index:10}
+    .pic.show{display:block;opacity:1}
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:25px;max-width:950px;margin:0 auto;padding:0 25px}
+    .gallery img{width:100%;height:230px;object-fit:cover;border-radius:18px;border:2px solid #ffe6f0;box-shadow:0 2px 12px rgba(255,182,193,.35);transition:transform .4s ease,box-shadow .4s ease,filter .4s ease}
+    .gallery img:hover{transform:scale(1.08);box-shadow:0 6px 25px rgba(255,145,175,.5);filter:brightness(1.08)}
+
+    /* ---------- LOGIN MODAL ---------- */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:60;opacity:0;visibility:hidden;transition:opacity .25s ease}
+    .modal-overlay.show{opacity:1;visibility:visible}
+    .modal{background:white;border-radius:14px;padding:22px 20px;width:320px;max-width:92%;box-shadow:0 10px 40px rgba(0,0,0,.35);text-align:left}
+    .modal h3{margin:0 0 8px;font-size:18px;color:#e45b8d}
+    .modal p{margin:0 0 14px;color:#666;font-size:14px}
+    .modal label{display:block;font-size:13px;color:#444;margin-bottom:6px}
+    .modal input{width:100%;padding:10px;border-radius:8px;border:1px solid #eee;margin-bottom:10px;font-size:14px}
+    .modal .actions{display:flex;gap:8px;justify-content:flex-end}
+    .btn{background:linear-gradient(135deg,#ffb6c1,#ff91af);color:white;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+    .btn.ghost{background:#f6f6f6;color:#444}
+    .error{color:#b00020;font-size:13px;margin-top:6px;min-height:18px}
+
+    /* responsive */
+    @media (max-width:560px){h1{font-size:56px;line-height:1.05}}
+  </style>
+</head>
+<body>
+  <!-- bokeh bg -->
+  <div class="bokeh" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- MUSIC BUTTON (center first) -->
+  <button id="musicBtn" aria-label="Play music">🎵</button>
+
+  <!-- LOGIN MODAL (shown after first play) -->
+  <div id="loginModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document">
+      <h3>Halo sayang aku</h3>
+      <p>Login dulu ya sebelum lanjut 💖 </p>
+
+      <label for="username">Username</label>
+      <input id="username" type="text" autocomplete="name" placeholder="Pake nama lengkap kamu ya">
+
+      <label for="password">Password (dd-mm-yyyy) </label>
+      <input id="password" type="password" autocomplete="off" placeholder="Tanggal lahir kamu berapa?">
+
+      <div class="error" id="loginError"></div>
+
+      <div class="actions">
+        <button class="btn ghost" id="loginCancel">Batal</button>
+        <button class="btn" id="loginSubmit">Masuk</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TITLE (hidden until login success) -->
+  <div class="Happy" id="titleSection" aria-hidden="true">
+    <h1 class="typing" id="typingText"></h1>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="pic" id="gallerySection" aria-hidden="true">
+    <div class="gallery">
+      <!-- GANTI DI SINI: ganti src dengan foto kamu -->
+      <img src="pic1.jpg" alt="Foto 1">
+      <img src="pic2.jpg" alt="Foto 2">
+      <img src="pic3.jpg" alt="Foto 3">
+      <img src="pic4.jpg" alt="Foto 4">
+      <img src="pic5.jpg" alt="Foto 5">
+      <img src="pic6.jpg" alt="Foto 6">
+      <img src="pic7.jpg" alt="Foto 7">
+      <img src="pic8.jpg" alt="Foto 8">
+      <img src="pic9.jpg" alt="Foto 9">
+    </div>
+  </div>
+
+  <script>
+    /* ========== CONFIG: GANTI DI SINI JIKA PERLU ========== */
+    const CORRECT_USERNAME = "Aisyah Aulia Azizah"; // GANTI DI SINI kalau mau user lain
+    const CORRECT_PASSWORD = "08-10-2003"; // GANTI DI SINI kalau mau password lain (format dd/mm/yyyy)
+    const MESSAGE = "Happy Birthday\nAisyah Aulia Azizah 🎂💖"; // GANTI DI SINI teks final (bagian typing)
+    /* ====================================================== */
+
+    const music = document.getElementById('bgMusic');
+    const btn = document.getElementById('musicBtn');
+    const loginModal = document.getElementById('loginModal');
+    const loginSubmit = document.getElementById('loginSubmit');
+    const loginCancel = document.getElementById('loginCancel');
+    const usernameInp = document.getElementById('username');
+    const passwordInp = document.getElementById('password');
+    const loginError = document.getElementById('loginError');
+    const titleSection = document.getElementById('titleSection');
+    const gallerySection = document.getElementById('gallerySection');
+    const typingText = document.getElementById('typingText');
+
+    let playedOnce = false;
+    let playing = false;
+
+    // fungsi mengetik huruf-per-huruf
+    function typeText(text, element, charDelay = 80, lineBreakDelay = 200) {
+      element.innerHTML = "";
+      const chars = Array.from(text);
+      let index = 0;
+      function step() {
+        if (index >= chars.length) return;
+        const ch = chars[index++];
+        if (ch === "\n") {
+          element.appendChild(document.createElement("br"));
+          setTimeout(step, lineBreakDelay);
+        } else {
+          const span = document.createElement("span");
+          span.textContent = ch;
+          span.style.opacity = "0";
+          element.appendChild(span);
+          // trigger fade via small timeout to allow CSS animation usage
+          setTimeout(() => { span.style.opacity = "1"; }, 10);
+          setTimeout(step, charDelay);
+        }
+      }
+      step();
+    }
+
+    // helper show/hide login modal
+    function openLoginModal() {
+      loginError.textContent = "";
+      usernameInp.value = "";
+      passwordInp.value = "";
+      loginModal.classList.add('show');
+      loginModal.setAttribute('aria-hidden','false');
+      usernameInp.focus();
+    }
+    function closeLoginModal() {
+      loginModal.classList.remove('show');
+      loginModal.setAttribute('aria-hidden','true');
+    }
+
+    // MAIN: klik tombol musik
+    btn.addEventListener('click', async () => {
+      if (!playedOnce) {
+        // pertama kali klik -> fade out center button, pindah ke corner dan play music
+        btn.classList.add('fadeOut');
+        setTimeout(() => {
+          btn.classList.add('corner');
+          btn.classList.remove('fadeOut');
+        }, 600);
+        // tunjukkan corner button pelan
+        setTimeout(() => {
+          btn.classList.add('show'); // class .show akan memberi opacity:1 di CSS
+          btn.textContent = '⏸️';
+        }, 900);
+
+        // play music (bisa dipause jika credential salah later)
+        try {
+          await music.play();
+          playing = true;
+        } catch (e) {
+          // kalau autoplay diblok, biarkan user tekan lagi
+          console.warn("Autoplay blocked:", e);
+        }
+
+        // buka modal login sekarang
+        setTimeout(openLoginModal, 900);
+
+        playedOnce = true;
+      } else {
+        // subsequent click -> toggle play/pause (but only if logged in)
+        if (!titleSection.classList.contains('show')) {
+          // kalau belum login, klik tombol tidak akan bypass modal — buka modal lagi
+          openLoginModal();
+          return;
+        }
+        if (!playing) {
+          music.play();
+          btn.textContent = '⏸️';
+          playing = true;
+        } else {
+          music.pause();
+          btn.textContent = '🎵';
+          playing = false;
+        }
+      }
+    });
+
+    // login submit handler
+    loginSubmit.addEventListener('click', () => {
+      const u = usernameInp.value.trim();
+      const p = passwordInp.value.trim();
+      // cek exact match
+      if (u === CORRECT_USERNAME && p === CORRECT_PASSWORD) {
+        loginError.textContent = "";
+        closeLoginModal();
+        // tetap biarkan musik berjalan
+        // tampilkan title (typing) lalu gallery
+        titleSection.classList.add('show');
+        // jalankan typing
+        typeText(MESSAGE, typingText, 90, 250);
+        // tampilkan gallery setelah delay (sesuaikan dengan panjang pesan)
+        // kira-kira tunggu selama durasi typing (chars * 90ms)
+        const approxChars = MESSAGE.length;
+        const approxDelay = approxChars * 90 + 600;
+        setTimeout(() => {
+          gallerySection.classList.add('show');
+        }, approxDelay);
+      } else {
+        loginError.textContent = "Username atau password salah. Akses ditolak.";
+        // hentikan musik agar akses tidak berlanjut
+        music.pause();
+        btn.textContent = '🎵';
+        playing = false;
+      }
+    });
+
+    // cancel handler: jika user batal, kembalikan tombol ke state non-active (opsional)
+    loginCancel.addEventListener('click', () => {
+      closeLoginModal();
+      // pause musik karena tidak ada autentikasi
+      music.pause();
+      btn.textContent = '🎵';
+      playing = false;
+    });
+
+    // allow pressing Enter key on inputs
+    [usernameInp, passwordInp].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          loginSubmit.click();
+        }
+      });
+    });
+
+    // Accessibility: close modal on overlay click (optional)
+    loginModal.addEventListener('click', (e) => {
+      if (e.target === loginModal) {
+        // klik di luar modal dianggap cancel
+        loginCancel.click();
+      }
+    });
+  </script>
+</body>
+</html>
